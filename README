@@ -1,0 +1,86 @@
+// COPYRIGHT RUSU BOGDAN, 312CAa 2022-2023
+
+BONUS TASK FOR SUBJECT PCLP1, 2022-2023: MY_AV
+
+THe approach for the given task consists of different heuristics, observed
+by analysing the proposed data sets and by further developing the heuristics
+given in the problem text.
+
+First of all, the program reads all of the known malicious domains in the
+given database and stores them in a database structure (contains the length
+of the database and the actual strings). After that it first reads data
+from the input file "urls.in", line by line and checks the given url
+through different heuristics.
+
+The first one is given in the task, and that is checking the database of
+known malicious domains to see whether the domain of the current url
+resides in that database. If that is so, then ok, is set to 1 (in our case
+ok equals 1 means we have found a malicious string, ok being the same
+value we print at the end of the verification process).
+
+The second one checks if the given url ends with a malicious extension.
+I have analysed the proposed data and checked multiple sources for more
+malicious extensions and came up with the list that can be seen in the source
+code. Among them, we can find '.bin', '.exe' (given in the heuristics
+suggestions), '.apk' (extension for apps on the Android platform), as well
+as '.pdf' or '.doc' or '.xls'. These last ones may seem inoffensive, but they
+can contain malicious code as well that can infect the computer.
+
+The third heuristics, check_dom_length(), calculates the length of the domain
+and if it is too large (e.g. > 40), then the url might be fishy.
+
+The fourth, check_sim() loads a database of known domains and checks, with the
+help of the Levenshtein distance, if a domain is similar to a known, good one.
+For example, we have the url "instagran.com". It is similar to the known url
+"instagram.com", and this heuristics checks if something like this appears in
+the given urls.
+
+The next heuristics checks whether the parameter at the end of a query is
+defined, i.e. we can't have "google.com/resource?type=" as a good url and
+checks if the query has parameters, we can't have "google.com/data?" as
+a good url either.
+
+have_lang_in_path() checks whether the url has a web language in the path,
+for example, html or php. These words usually appear with their extensions,
+and not by themselves. And when they don't, it can be a sign of something
+dangerous.
+
+check_download() checks if the word "download" is in the path, as this can
+lead to the user having files downloaded into their computer by accidentally
+accessing this url.
+
+check_domain_in_path() checks if there are domains in the path as this is
+usually a sign of phishing activity by leading the user to believe they are
+accessing a legitimate website.
+
+For the last heuristics, I upgraded the heuristics given in the task, the one
+that checks the number of digits in the domain to the number characters in 
+the domain. I first check whether the domain contains special characters, that
+are not allowed, the ones apart from letters, digits or hyphens. If there is
+any of these special characters inside the domain, then it is malware or
+phishing. After that, with a domain that contains only allowed characters,
+we check count the hyphens and digits and check their frequence when compared
+to the whole string. As I have observed, if the frequence of digits
+is greater than 1/2 of the domain length, then the url might be infected.
+This could be further generalized with machine learning and a larger database.
+
+
+For the second task, I first analyzed the data by importing the csv file into
+Excel and checking similarities between bruteforce attacks and cryptomining
+traffic. The field that was particularly similar for the bruteforce attacks
+was the ACK_flag field that was above all the other traffic. This is caused
+because bruteforce attacks send a high amount of packets to the receiving end
+and ACK comes from acknowledgement, which confirms the receival of the pack.
+Bruteforce tries to make its way into a database by repeatedly verifying
+passwords or passkeys and thus the high amount of packets sent.
+
+As for the cryptomining traffic, I observed that the common fields were the
+SYN_flag, FIN_flag, ACK_flag, having all of the values equal to 0. This is
+caused by the fact that there is no actual traffic realted to a specific
+connection, but instead the traffic is related to performing the computational
+work that is required to solve the cryptomining complex mathematical
+equations. As cryptomining is not done for a long period of time so as not
+to raise suspicion the average payload of flow packets must not be at a very
+high value, as well as the backward packets. Cryptomining doesn't send multiple
+files back. Similarly, the response ip must be a valid one, and not one of the
+reserved ones.
